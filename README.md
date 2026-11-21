@@ -3,7 +3,7 @@
 Downloads for [Antelog](https://antelog.dev), the safety layer for AI agents.
 Every action your agent wants to take is written down, checked, and blocked if it's dangerous, before it runs.
 
-This repository contains release downloads only. The source code is open source (Apache 2.0) at [Antelog-dev/antelog](https://github.com/Antelog-dev/antelog).
+This repository contains release downloads only.
 
 ## Install
 

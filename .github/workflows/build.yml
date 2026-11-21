@@ -1,8 +1,12 @@
 name: Build and publish
 
-# Builds Antelog from the open source repo Antelog-dev/antelog and publishes the downloads here.
-# Compiler output is hidden to keep the public logs short; if a build fails, rebuild the
-# same tag locally to see the error.
+# Builds Antelog from the private source repo Antelog-dev/antelog and publishes the downloads here.
+# Builds run in this public repo because GitHub Actions is free for public repos.
+#
+# Privacy: the source stays private. It is fetched with SOURCE_TOKEN (a fine-grained,
+# read-only token for Antelog-dev/antelog), never saved to disk credentials, and all
+# compiler output is hidden, because these logs are public. If a build fails, rebuild
+# the same tag on a private machine to see the error.
 #
 # Run it: Actions > Build and publish > Run workflow, with the source tag (e.g. v0.9.25).
 # Only people with write access to this repo can run it; it has no pull request trigger.
@@ -50,7 +54,7 @@ jobs:
       with:
         repository: ${{ env.SOURCE }}
         ref: refs/tags/${{ inputs.tag }}
-        token: ${{ github.token }}
+        token: ${{ secrets.SOURCE_TOKEN }}
         persist-credentials: false
     - run: rustup target add ${{ matrix.target }}
     - name: Build (output hidden)
@@ -80,7 +84,7 @@ jobs:
       with:
         repository: ${{ env.SOURCE }}
         ref: refs/tags/${{ inputs.tag }}
-        token: ${{ github.token }}
+        token: ${{ secrets.SOURCE_TOKEN }}
         persist-credentials: false
     - run: rustup target add ${{ matrix.target }}
     - name: Install zig (portable builds for older Linux too)
@@ -117,7 +121,7 @@ jobs:
       with:
         repository: ${{ env.SOURCE }}
         ref: refs/tags/${{ inputs.tag }}
-        token: ${{ github.token }}
+        token: ${{ secrets.SOURCE_TOKEN }}
         persist-credentials: false
     - run: rustup target add ${{ matrix.target }}
     - name: Build (output hidden)
@@ -144,7 +148,7 @@ jobs:
       with:
         repository: ${{ env.SOURCE }}
         ref: refs/tags/${{ inputs.tag }}
-        token: ${{ github.token }}
+        token: ${{ secrets.SOURCE_TOKEN }}
         persist-credentials: false
         path: src
     - uses: actions/download-artifact@v4
@@ -168,7 +172,7 @@ jobs:
     # The annotated tag's message in the source repo is the release notes.
     - name: Release notes from the source tag
       env:
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ secrets.SOURCE_TOKEN }}
         TAG: ${{ inputs.tag }}
       run: |
         obj=$(gh api "repos/$SOURCE/git/ref/tags/$TAG" --jq '.object.type + " " + .object.sha')
